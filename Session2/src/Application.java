@@ -17,6 +17,7 @@ public class Application {
 					"Search Insert", 
 					"Plus One", 
 					"Merge Sorted Array",
+					"Convert Sorted Array to Binary Search Tree",
 					"Exit"
 					);
 			String userInput;
@@ -31,7 +32,6 @@ public class Application {
 				userInput = userInputScanner.next();
 				
 				try {
-	
 					int[] nums, nums1, nums2;
 					int m, n;
 
@@ -181,8 +181,26 @@ public class Application {
 							System.out.println("Actual Output: " + Arrays.toString(nums1));
 							System.out.println();
 							break;
-	
+							
 						case 7:
+							nums = new int[]{-10,-3,0,5,9};
+
+							System.out.println("################### Sample 1 ###################");
+							System.out.println("Input: nums = [-10,-3,0,5,9]");
+							System.out.println("Output: [0,-10,5,null,-3,null,9]");
+							System.out.println("Actual Output: " + sortedArrayToBST(nums));
+							System.out.println();
+
+							nums = new int[]{1,3};
+
+							System.out.println("################### Sample 2 ###################");
+							System.out.println("Input: nums = [1,3]");
+							System.out.println("Expected Output: [1,null,3]");
+							System.out.println("Actual Output: " + sortedArrayToBST(nums));
+							System.out.println();
+
+	
+						case 8:
 							break PROGRAM_ITERATOR;
 	
 						default:
@@ -294,4 +312,66 @@ public class Application {
         	else if(0 > i)
         		nums1[k] = nums2[j--];
     }
+	
+	private static TreeNode sortedArrayToBST(int[] nums) {
+		
+		TreeNode treeNode = buildBST(nums, 0, nums.length - 1);
+		
+        return treeNode;
+    }
+	
+	private static TreeNode buildBST(int[] nums, int start, int end) {
+		if(start > end) return null;
+
+		TreeNode treeNode = new TreeNode();
+		
+		int mid = start + ((0 == end-start) ? 0 : (end-start)/2);
+		
+		treeNode.val = nums[mid];
+		treeNode.left = buildBST(nums, start, mid-1);
+		treeNode.right = buildBST(nums, mid + 1, end);
+		
+		return treeNode;
+	}
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+    
+    private String getLeftNodeVal() {
+    	return (null == this.left ? null : String.valueOf(this.left.val)) + ",";
+    }
+    
+    private String getRightNodeVal() {
+    	return (null == this.right ? null : String.valueOf(this.right.val)) + ",";
+    }
+    
+    private boolean hasNoChildren(TreeNode treeNode) {
+    	return null == treeNode.left && null == treeNode.right;
+    }
+    
+    private String getChildren(TreeNode treeNode) {
+    	if(null == treeNode || hasNoChildren(treeNode)) return "";
+    	
+    	String result = treeNode.getLeftNodeVal() + treeNode.getRightNodeVal();
+    	
+    	result += getChildren(treeNode.left);
+    	result += getChildren(treeNode.right);
+    	
+    	return result;
+    }
+    
+	@Override
+	public String toString() {
+		return "[" + this.val + "," + getChildren(this).replaceAll(",$", "") + "]";
+	}
 }
